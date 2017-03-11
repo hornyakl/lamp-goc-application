@@ -1,8 +1,13 @@
 package com.docler.lamp.lampgocapplication;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -16,13 +21,37 @@ public class CreateQuestActivity extends AppCompatActivity
     private class GeoWebChromeClient extends WebChromeClient {
         @Override
         public void onGeolocationPermissionsShowPrompt(
-                String origin,
-                GeolocationPermissions.Callback callback
+            String origin,
+            GeolocationPermissions.Callback callback
         ) {
-            // Always grant permission since the app itself
-            // requires location permission and the user
-            // has therefore already granted it.
-            callback.invoke(origin, true, false);
+            // Add permission for gps and let user grant the permission
+            if (ActivityCompat.checkSelfPermission(
+                CreateQuestActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    CreateQuestActivity.this,
+                    new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    666
+                );
+
+                return;
+            }
+
+            callback.invoke(origin, true, true);
+        }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            Log.d(
+                "MyApplication", consoleMessage.message() + " -- From line "
+                + consoleMessage.lineNumber() + " of "
+                + consoleMessage.sourceId()
+            );
+
+            return super.onConsoleMessage(consoleMessage);
         }
     }
 

@@ -31,6 +31,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.docler.lamp.lampgocapplication.sensorFusion.HardwareChecker;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 
@@ -138,8 +139,6 @@ public class CameraViewActivity extends AppCompatActivity {
 
     private CameraViewCameraStateCallback stateCallback;
 
-    private OrientationProvider orientationProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,8 +158,14 @@ public class CameraViewActivity extends AppCompatActivity {
         cameraContentView.setSurfaceTextureListener(textureListener);
         stateCallback = new CameraViewCameraStateCallback();
 
-        orientationProvider = new RotationVectorProvider(
-            (SensorManager) getSystemService(SENSOR_SERVICE)
+        SensorManager sensorManager     = (SensorManager) getSystemService(SENSOR_SERVICE);
+        HardwareChecker hardwareChecker = new HardwareChecker(sensorManager);
+        if (!hardwareChecker.IsRotationVectorAvailable()) {
+            finish();
+        }
+
+        RotationVectorProvider orientationProvider = new RotationVectorProvider(
+            sensorManager
         );
 
         // Set up the user interaction to manually show or hide the system UI.
