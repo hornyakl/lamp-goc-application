@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
         final Button createQuestButton = (Button) findViewById(R.id.createQuestButton);
         createQuestButton.setOnClickListener(new CreateQuestButtonListener());
 
-        final Button sensorTestButton = (Button) findViewById(R.id.sensor_test_button);
-        sensorTestButton.setOnClickListener(new SensorTestButtonListener());
+        final Button oldCameraButton = (Button) findViewById(R.id.old_camera_button);
+        oldCameraButton.setOnClickListener(new OldCameraButtonListener());
     }
 
     private class PlayButtonListener implements View.OnClickListener {
@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class SensorTestButtonListener implements View.OnClickListener {
+    private class OldCameraButtonListener implements View.OnClickListener {
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, SensorDemo.class);
+            Intent intent = new Intent(MainActivity.this, OldCameraActivity.class);
             startActivity(intent);
         }
     }

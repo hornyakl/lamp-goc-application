@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera2.full" />
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:name=".LampApplication"
@@ -30,7 +30,8 @@
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".CreateQuestActivity" />
         <activity android:name=".SensorDemo" />
-        <activity android:name=".RadarActivity"></activity>
+        <activity android:name=".RadarActivity" />
+        <activity android:name=".OldCameraActivity" />
     </application>
 
 </manifest>
