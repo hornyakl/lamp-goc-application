@@ -34,12 +34,6 @@ public class RadarActivity extends AppCompatActivity {
 
         application = (LampApplication) getApplication();
 
-        Canvas grid = new Canvas(Bitmap.createBitmap(h,w, Bitmap.Config.ARGB_8888));
-        grid. drawColor(Color.WHITE);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        grid.drawCircle(w/2, h/2 , w/2, paint);
-
         AsyncTask<Void, Void, Void> mTask = new AsyncTask<Void, Void, Void>()
         {
             @Override
