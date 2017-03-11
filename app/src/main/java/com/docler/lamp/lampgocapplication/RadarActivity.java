@@ -5,7 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import org.json.JSONArray;
+import com.docler.lamp.lampgocapplication.Quest.Quest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class RadarActivity extends AppCompatActivity {
     private JSONObject questList;
@@ -23,8 +26,7 @@ public class RadarActivity extends AppCompatActivity {
     private LampApplication application;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radar);
 
@@ -33,8 +35,7 @@ public class RadarActivity extends AppCompatActivity {
         AsyncTask<Void, Void, Void> mTask = new AsyncTask<Void, Void, Void>()
         {
             @Override
-            protected Void doInBackground(Void... params)
-            {
+            protected Void doInBackground(Void... params) {
                 try {
                     questListJson = getQuestListFromServer(questListPath);
                 } catch (IOException e) {
@@ -45,14 +46,31 @@ public class RadarActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(Void result)
-            {
+            protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
 
                 try {
-                    JSONObject questList = new JSONObject(questListJson);
+                    questList = new JSONObject(questListJson);
 
+                    Iterator<String> keys = questList.keys();
 
+                    ArrayList<Quest> quests = new ArrayList<>(questList.length());
+                    while (keys.hasNext()) {
+                        String id = keys.next();
+                        JSONObject questObject = questList.getJSONObject(id);
+                        quests.add(
+                            new Quest(
+                                questObject.getInt("id"),
+                                questObject.getString("name"),
+                                questObject.getString("description"),
+                                questObject.getDouble("latitude"),
+                                questObject.getDouble("longitude"),
+                                questObject.getLong("experience_point")
+                            )
+                        );
+                    }
+
+                    Toast.makeText(RadarActivity.this, "ejjjha", Toast.LENGTH_LONG);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -62,20 +80,19 @@ public class RadarActivity extends AppCompatActivity {
         mTask.execute();
     }
 
-    private static String getQuestListFromServer(String url) throws IOException
-    {
+    private static String getQuestListFromServer(String url) throws IOException {
         BufferedReader inputStream;
 
-        URL jsonUrl      = new URL(url);
+        URL jsonUrl = new URL(url);
         URLConnection dc = jsonUrl.openConnection();
 
         dc.setConnectTimeout(1000);
         dc.setReadTimeout(1000);
 
         inputStream = new BufferedReader(
-            new InputStreamReader(
-                dc.getInputStream()
-            )
+                new InputStreamReader(
+                        dc.getInputStream()
+                )
         );
 
         return inputStream.readLine();

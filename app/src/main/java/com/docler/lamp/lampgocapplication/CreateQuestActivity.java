@@ -46,7 +46,7 @@ public class CreateQuestActivity extends AppCompatActivity
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
             Log.d(
-                "MyApplication", consoleMessage.message() + " -- From line "
+                "LampGoc", consoleMessage.message() + " -- From line "
                 + consoleMessage.lineNumber() + " of "
                 + consoleMessage.sourceId()
             );
@@ -69,6 +69,6 @@ public class CreateQuestActivity extends AppCompatActivity
 
         createQuestWebView.setWebChromeClient(new GeoWebChromeClient());
 
-        createQuestWebView.loadUrl("https://goc-lamp.tk");
+        createQuestWebView.loadUrl("https://goc-lamp.tk/quest-create");
     }
 }

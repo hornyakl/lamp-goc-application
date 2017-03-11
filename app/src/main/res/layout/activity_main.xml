@@ -50,7 +50,7 @@
         android:id="@+id/sensor_test_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="131dp"
+        android:layout_marginBottom="136dp"
         android:text="Test sensors"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintLeft_toLeftOf="parent"

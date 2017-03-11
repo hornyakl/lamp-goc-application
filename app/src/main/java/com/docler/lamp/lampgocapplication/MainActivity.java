@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         createQuestButton.setOnClickListener(new CreateQuestButtonListener());
 
         final Button sensorTestButton = (Button) findViewById(R.id.sensor_test_button);
-        sensorTestButton.setOnClickListener(new SenssorTestButtonListener());
+        sensorTestButton.setOnClickListener(new SensorTestButtonListener());
     }
 
     private class PlayButtonListener implements View.OnClickListener {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class SenssorTestButtonListener implements View.OnClickListener {
+    private class SensorTestButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, SensorDemo.class);
             startActivity(intent);
