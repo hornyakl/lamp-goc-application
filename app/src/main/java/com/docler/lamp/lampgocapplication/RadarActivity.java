@@ -1,5 +1,7 @@
 package com.docler.lamp.lampgocapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +33,12 @@ public class RadarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_radar);
 
         application = (LampApplication) getApplication();
+
+        Canvas grid = new Canvas(Bitmap.createBitmap(h,w, Bitmap.Config.ARGB_8888));
+        grid. drawColor(Color.WHITE);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        grid.drawCircle(w/2, h/2 , w/2, paint);
 
         AsyncTask<Void, Void, Void> mTask = new AsyncTask<Void, Void, Void>()
         {
