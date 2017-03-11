@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
         final Button sensorTestButton = (Button) findViewById(R.id.sensor_test_button);
         sensorTestButton.setOnClickListener(new SenssorTestButtonListener());
+
+        final Button radarActivity = (Button) findViewById(R.id.radarActivityButton);
+        radarActivity.setOnClickListener(new RadarActivityButtonListener());
     }
 
     private class PlayButtonListener implements View.OnClickListener {
@@ -41,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
     private class SenssorTestButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, SensorDemo.class);
+            startActivity(intent);
+        }
+    }
+
+    private class RadarActivityButtonListener implements View.OnClickListener {
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, RadarActivity.class);
             startActivity(intent);
         }
     }
