@@ -16,11 +16,21 @@ public class MainActivity extends AppCompatActivity {
 
         final Button button = (Button) findViewById(R.id.play_button);
         button.setOnClickListener(new PlayButtonListener());
+
+        final Button createQuestButton = (Button) findViewById(R.id.createQuestButton);
+        createQuestButton.setOnClickListener(new CreateQuestButtonListener());
     }
 
     private class PlayButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, CameraViewActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private class CreateQuestButtonListener implements View.OnClickListener {
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, CreateQuestActivity.class);
             startActivity(intent);
         }
     }
