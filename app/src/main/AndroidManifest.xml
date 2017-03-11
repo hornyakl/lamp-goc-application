@@ -32,6 +32,7 @@
         <activity android:name=".SensorDemo" />
         <activity android:name=".RadarActivity" />
         <activity android:name=".OldCameraActivity" />
+        <activity android:name=".PassedQuestsActivity"></activity>
     </application>
 
 </manifest>
