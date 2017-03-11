@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -29,6 +30,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Toast;
+
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 
 import java.util.Arrays;
 
@@ -132,9 +136,9 @@ public class CameraViewActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
-//    private CameraViewSurfaceTextureListener textureListener;
-
     private CameraViewCameraStateCallback stateCallback;
+
+    private OrientationProvider orientationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +158,10 @@ public class CameraViewActivity extends AppCompatActivity {
         CameraViewSurfaceTextureListener textureListener = new CameraViewSurfaceTextureListener();
         cameraContentView.setSurfaceTextureListener(textureListener);
         stateCallback = new CameraViewCameraStateCallback();
+
+        orientationProvider = new RotationVectorProvider(
+            (SensorManager) getSystemService(SENSOR_SERVICE)
+        );
 
         // Set up the user interaction to manually show or hide the system UI.
         cameraContentView.setOnClickListener(new View.OnClickListener() {
