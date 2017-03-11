@@ -20,11 +20,15 @@ public class RadarActivity extends AppCompatActivity {
     private String questListJson;
     private String questListPath = "https://goc-lamp.tk/quest-list";
 
+    private LampApplication application;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radar);
+
+        application = (LampApplication) getApplication();
 
         AsyncTask<Void, Void, Void> mTask = new AsyncTask<Void, Void, Void>()
         {
@@ -76,4 +80,20 @@ public class RadarActivity extends AppCompatActivity {
 
         return inputStream.readLine();
     }
+
+    @Override
+    protected void onPause() {
+        application.stopViewChangeListen();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        application.startViewChangeListen(this);
+    }
+
+
 }

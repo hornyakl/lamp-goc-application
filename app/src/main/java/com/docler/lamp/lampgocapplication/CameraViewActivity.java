@@ -125,6 +125,8 @@ public class CameraViewActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
+    private LampApplication application;
+
     //    private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -144,6 +146,8 @@ public class CameraViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_camera_view);
+
+        application = (LampApplication) getApplication();
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
@@ -175,6 +179,20 @@ public class CameraViewActivity extends AppCompatActivity {
                 toggle();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        application.stopViewChangeListen();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        application.startViewChangeListen(this);
     }
 
     @Override

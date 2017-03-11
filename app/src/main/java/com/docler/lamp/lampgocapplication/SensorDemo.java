@@ -57,7 +57,7 @@ public class SensorDemo extends AppCompatActivity {
 
             if (Math.abs(angles[1]) < 0.3)
             {
-                Intent intent = new Intent(SensorDemo.this, CameraViewActivity.class);
+                Intent intent = new Intent(SensorDemo.this, SensorDemo.class);
                 startActivity(intent);
             }
         }

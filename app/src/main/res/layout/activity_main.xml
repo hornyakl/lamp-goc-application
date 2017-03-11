@@ -46,7 +46,6 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
 
-
     <Button
         android:id="@+id/sensor_test_button"
         android:layout_width="wrap_content"
@@ -60,17 +59,5 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
 
-    <Button
-        android:id="@+id/radarActivityButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="91dp"
-        android:text="Radar activity"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>
