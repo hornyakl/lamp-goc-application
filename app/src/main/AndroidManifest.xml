@@ -27,7 +27,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_camera_view"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".CreateQuestActivity"></activity>
+        <activity android:name=".CreateQuestActivity" />
+        <activity android:name=".SensorDemo" />
+        <activity android:name=".RadarActivity"></activity>
     </application>
 
 </manifest>
