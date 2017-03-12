@@ -32,9 +32,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.docler.lamp.lampgocapplication.sensorFusion.HardwareChecker;
-import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor1Provider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
-import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 
 import java.util.Arrays;
 

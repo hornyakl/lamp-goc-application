@@ -2,7 +2,6 @@ package com.docler.lamp.lampgocapplication;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
@@ -10,27 +9,21 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.docler.lamp.lampgocapplication.utils.Compatibility;
+import com.docler.lamp.lampgocapplication.Quest.Quest;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-public class OldCameraActivity extends AppCompatActivity {
+public class OldCameraActivity extends MovementAwareActivity {
     CameraView cameraView;
     DisplayMetrics displayMetrics;
     Camera camera;
     public int screenWidth;
     public int screenHeight;
 
-    private LampApplication application;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        application = (LampApplication) getApplication();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -48,17 +41,18 @@ public class OldCameraActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        application.stopViewChangeListen();
+    protected void updateEulerAngles(double x, double y, double z) {
 
-        super.onPause();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void updateLocation(double latitude, double longitude) {
 
-        application.startViewChangeListen(this);
+    }
+
+    @Override
+    protected void onQuests(List<Quest> quests) {
+
     }
 }
 

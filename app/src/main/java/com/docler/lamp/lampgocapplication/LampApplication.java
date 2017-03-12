@@ -21,6 +21,8 @@ public class LampApplication extends Application {
 
     private OrientationProvider orientationProvider;
 
+    private QuestProvider questProvider;
+
     private static final float CAMERA_VIEW_TILT = 0.7f;
     private static final float RADAR_VIEW_TILT = 0.5f;
     private static final float MIDDLE_TILT = 0.6f;
@@ -35,6 +37,8 @@ public class LampApplication extends Application {
         orientationProvider = new RotationVectorProvider(
             sensorManager
         );
+
+        questProvider = new QuestProvider();
     }
 
     public void startViewChangeListen(Activity currentActivity) {
@@ -48,6 +52,10 @@ public class LampApplication extends Application {
         this.currentActivity = null;
         sensorManager.unregisterListener(sensorListener);
         orientationProvider.stop();
+    }
+
+    public QuestProvider getQuestProvider() {
+        return questProvider;
     }
 
     public <T extends Activity> void changeActivity(Class<T> clazz) {

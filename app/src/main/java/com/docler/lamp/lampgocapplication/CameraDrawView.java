@@ -9,7 +9,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RadarDrawView extends View {
+public class CameraDrawView extends View {
 
     private static final double PRE_MULTI = 400.d;
     private static final double POST_MULTI = 300.d;
@@ -27,7 +27,7 @@ public class RadarDrawView extends View {
 
     Paint paint = null;
 
-    public RadarDrawView(Context context) {
+    public CameraDrawView(Context context) {
         super(context);
         paint = new Paint();
 
