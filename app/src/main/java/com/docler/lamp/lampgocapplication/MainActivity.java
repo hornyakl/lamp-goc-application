@@ -19,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
         final Button createQuestButton = (Button) findViewById(R.id.createQuestButton);
         createQuestButton.setOnClickListener(new CreateQuestButtonListener());
 
+        final Button passedQuestButton = (Button) findViewById(R.id.passedQuestsButton);
+        passedQuestButton.setOnClickListener(new PassedQuestsButtonListener());
+
         final Button oldCameraButton = (Button) findViewById(R.id.old_camera_button);
         oldCameraButton.setOnClickListener(new OldCameraButtonListener());
     }
@@ -47,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private class OldCameraButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, OldCameraActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private class PassedQuestsButtonListener implements View.OnClickListener {
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, PassedQuestsActivity.class);
             startActivity(intent);
         }
     }
