@@ -66,11 +66,20 @@ public class SensorDemo extends AppCompatActivity {
 
                 MatrixF4x4 matrix = new MatrixF4x4();
                 orientationProvider.getRotationMatrix(matrix);
-                matrix.getMatrix();
 
-                coordinateX.setText("" + angles[0] + " " + event.values[0]);
-                coordinateY.setText("" + angles[1] + " " + event.values[1]);
-                coordinateZ.setText("" + angles[2] + " " + event.values[2]);
+                Vector4f x = new Vector4f(1, 0, 0, 0);
+                Vector4f y = new Vector4f(0, 1, 0, 0);
+                Vector4f z = new Vector4f(0, 0, 1, 0);
+                Vector4f w = new Vector4f(0, 0, 0, 1);
+
+                matrix.multiplyVector4fByMatrix(x);
+                matrix.multiplyVector4fByMatrix(y);
+                matrix.multiplyVector4fByMatrix(z);
+                matrix.multiplyVector4fByMatrix(w);
+
+                coordinateX.setText("" + Math.atan2(x.getX(), x.getY()) + " " + Math.atan2(y.getX(), y.getY()) + " " + Math.atan2(z.getX(), z.getY()));
+                coordinateY.setText("" + Math.atan2(x.getX(), x.getZ()) + " " + Math.atan2(y.getX(), y.getZ()) + " " + Math.atan2(z.getX(), z.getZ()));
+                coordinateZ.setText("" + Math.atan2(x.getY(), x.getZ()) + " " + Math.atan2(y.getY(), y.getZ()) + " " + Math.atan2(z.getY(), z.getZ()));
             }
         }
 

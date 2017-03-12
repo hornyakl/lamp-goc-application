@@ -50,7 +50,6 @@ public class CameraDrawView extends View {
     }
 
     public void addPoint(double latitude, double longitude) {
-        clearPoints();
         points.add(new double[]{latitude, longitude});
         invalidate();
     }
@@ -73,18 +72,22 @@ public class CameraDrawView extends View {
 
         // Use Color.parseColor to define HTML colors
         paint.setColor(Color.parseColor("#CD5C5C"));
-        canvas.drawCircle(midX, midY, dotRadius, paint);
+
+        if (ownAngle > - Math.PI / 4 && ownAngle < Math.PI / 4)
+        {
+            canvas.drawCircle((int)(midX + ownAngle * 500), midY, dotRadius, paint);
+        }
 
         paint.setColor(Color.YELLOW);
         for (double[] point : points) {
-            int drawY = getOffset(point[0], point[1]);
+            int drawX = getOffset(point[0], point[1]);
 
-            if (drawY == Integer.MIN_VALUE)
+            if (drawX == Integer.MIN_VALUE)
             {
                 continue;
             }
 
-            canvas.drawCircle(midX, midY + drawY, dotRadius, paint);
+            canvas.drawCircle((int)(midX + drawX), midY, dotRadius, paint);
         }
     }
 
@@ -92,19 +95,17 @@ public class CameraDrawView extends View {
         double longDif = longitude - ownLongitude; // x
         double latDif = latitude - ownLatitude; // y
 
-//        double distance = Math.sqrt(longDif * longDif + latDif * latDif);
-
-        double angle = Math.atan2(latDif, longDif);
+        double angle = Math.atan2(latDif, longDif) - Math.PI / 2;
 
         double correctedAngle = toNonNegativeAngle(angle);
         double correctedOwnAngle = toNonNegativeAngle(ownAngle);
-        double minAngle = correctedOwnAngle- ANGLE / 2;
+        double minAngle = correctedOwnAngle - ANGLE / 2;
         double maxAngle = correctedOwnAngle + ANGLE / 2;
 
         if (correctedAngle > minAngle
                 && correctedAngle < maxAngle)
         {
-            return (int) (Math.sin(correctedAngle - correctedOwnAngle) * POST_MULTI);
+            return (int) ((correctedOwnAngle - correctedAngle) * POST_MULTI);
         }
         return Integer.MIN_VALUE;
     }

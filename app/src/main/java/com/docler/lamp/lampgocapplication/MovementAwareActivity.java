@@ -115,7 +115,9 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
+        }
     }
 
     @Override
@@ -147,7 +149,7 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
         application.startViewChangeListen(this);
     }
 
-    protected abstract void updateEulerAngles(double x, double y, double z);
+    protected abstract void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider);
 
     protected abstract void updateLocation(double latitude, double longitude);
 
@@ -162,7 +164,7 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
                 float[] angles = new float[3];
                 orientationProvider.getEulerAngles(angles);
 
-                updateEulerAngles(angles[0], angles[1], angles[2]);
+                updateOrientation(orientationProvider);
             }
         }
 
