@@ -1,6 +1,7 @@
 package com.docler.lamp.lampgocapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -58,40 +59,6 @@ public class OldCameraActivity extends MovementAwareActivity {
         questDoneProvider = new QuestDoneProvider();
     }
 
-//    protected void updateEulerAngles(double x, double y, double z) {
-//
-//        MatrixF4x4 matrix = new MatrixF4x4();
-//        orientationProvider.getRotationMatrix(matrix);
-//
-//        Vector4f xv = new Vector4f(1, 0, 0, 0);
-//        Vector4f yv = new Vector4f(0, 1, 0, 0);
-//        Vector4f zv = new Vector4f(0, 0, 1, 0);
-//        Vector4f wv = new Vector4f(0, 0, 0, 1);
-//
-//        matrix.multiplyVector4fByMatrix(xv);
-//        matrix.multiplyVector4fByMatrix(yv);
-//        matrix.multiplyVector4fByMatrix(zv);
-//        matrix.multiplyVector4fByMatrix(wv);
-//
-//        double[] doubles = new double[9];
-////        doubles[0] = (Math.atan2(xv.getX(), xv.getY()));
-////        doubles[1] = (Math.atan2(xv.getY(), xv.getZ()));
-//        doubles[2] = (Math.atan2(xv.getZ(), xv.getX()));
-//
-////        doubles[3] = (Math.atan2(yv.getX(), yv.getY()));
-////        doubles[4] = (Math.atan2(yv.getY(), yv.getZ()));
-////        doubles[5] = (Math.atan2(yv.getZ(), yv.getX()));
-////
-////        doubles[6] = (Math.atan2(zv.getX(), zv.getY()));
-////        doubles[7] = (Math.atan2(zv.getY(), zv.getZ()));
-////        doubles[8] = (Math.atan2(zv.getZ(), zv.getX()));
-//
-//        drawView.invalidate();
-//
-//        drawView.testAngles = doubles;
-//
-//    }
-
     protected void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider)
     {
         MatrixF4x4 matrix = new MatrixF4x4();
@@ -121,7 +88,6 @@ public class OldCameraActivity extends MovementAwareActivity {
 
 
     private class CameraOnTouchListener implements View.OnTouchListener {
-
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() != MotionEvent.ACTION_DOWN)
@@ -131,7 +97,11 @@ public class OldCameraActivity extends MovementAwareActivity {
 
             Quest quest = drawView.getQuestAt((int)event.getX(), (int)event.getY());
 
-            questDoneProvider.acceptQuest(quest);
+            //questDoneProvider.acceptQuest(quest);
+            application.currentQuest = quest;
+
+            Intent intent = new Intent(OldCameraActivity.this, AcceptQuest.class);
+            startActivity(intent);
 
             return true;
         }

@@ -28,7 +28,7 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
 
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-    private LampApplication application;
+    protected LampApplication application;
 
     private SensorManager sensorManager;
     private HardwareChecker hardwareChecker;

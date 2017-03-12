@@ -36,7 +36,8 @@
         <activity
             android:name=".OldCameraActivity"
             android:label="@string/title_activity_camera_view"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".AcceptQuest"></activity>
     </application>
 
 </manifest>

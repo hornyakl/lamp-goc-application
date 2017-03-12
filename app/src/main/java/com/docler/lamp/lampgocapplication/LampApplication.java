@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import com.docler.lamp.lampgocapplication.Quest.Quest;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 
@@ -26,6 +27,8 @@ public class LampApplication extends Application {
     private static final float CAMERA_VIEW_TILT = 0.7f;
     private static final float RADAR_VIEW_TILT = 0.5f;
     private static final float MIDDLE_TILT = 0.6f;
+
+    public Quest currentQuest;
 
     @Override
     public void onCreate() {

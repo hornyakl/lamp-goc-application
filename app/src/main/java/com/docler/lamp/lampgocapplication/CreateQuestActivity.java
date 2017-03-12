@@ -61,8 +61,6 @@ public class CreateQuestActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quest);
 
-        getSupportActionBar().hide();
-
         WebView createQuestWebView = (WebView) findViewById(R.id.createQuestView);
 
         WebSettings webSettings = createQuestWebView.getSettings();
