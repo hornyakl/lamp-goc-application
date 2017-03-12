@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
+import com.docler.lamp.lampgocapplication.sensorFusion.HardwareChecker;
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,12 +54,14 @@ public class RadarActivity extends AppCompatActivity {
     private RadarDrawView drawView;
 
     private SensorManager sensorManager;
+    private HardwareChecker hardwareChecker;
+    private LocationManager locationManager;
 
     private ViewChangerSensorListener sensorListener;
 
     private RadarLocationListener locationListener;
 
-    private OrientationProvider orientationProvider;
+    private ImprovedOrientationSensor2Provider orientationProvider;
 
     private GoogleApiClient googleApiClient;
 
@@ -72,14 +76,21 @@ public class RadarActivity extends AppCompatActivity {
 
         application = (LampApplication) getApplication();
 
-
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        hardwareChecker = new HardwareChecker(sensorManager);
+        if (
+            !hardwareChecker.IsRotationVectorAvailable()
+            || !hardwareChecker.IsGyroscopeAvailable()
+        ) {
+            finish();
+        }
+
         sensorListener = new ViewChangerSensorListener();
 
         locationListener = new RadarLocationListener();
 
-        orientationProvider = new RotationVectorProvider(
-                sensorManager
+        orientationProvider = new ImprovedOrientationSensor2Provider(
+            sensorManager
         );
 
         googleApiClient = new GoogleApiClient.Builder(this)

@@ -8,4 +8,12 @@ interface SensorChecker {
      * @return True, if an integrated sensor fusion (Rotation vector) is available. False otherwise.
      */
     boolean IsRotationVectorAvailable();
+
+    /**
+     * Checks if the device that is currently running the application
+     * supports the usage of gyroscope.
+     *
+     * @return True, if a gyroscope is available. False otherwise.
+     */
+    boolean IsGyroscopeAvailable();
 }

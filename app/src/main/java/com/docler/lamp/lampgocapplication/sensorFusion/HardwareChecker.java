@@ -15,6 +15,7 @@ import android.hardware.SensorManager;
 public class HardwareChecker implements SensorChecker
 {
     private boolean rotationVectorIsAvailable = false;
+    private boolean gyroscopeIsAvailable      = false;
 
     public HardwareChecker (SensorManager sensorManager)
     {
@@ -22,11 +23,22 @@ public class HardwareChecker implements SensorChecker
         {
             rotationVectorIsAvailable = true;
         }
+
+        if (sensorManager.getSensorList(Sensor.TYPE_GYROSCOPE).size() > 0)
+        {
+            gyroscopeIsAvailable = true;
+        }
     }
 
     @Override
     public boolean IsRotationVectorAvailable()
     {
         return rotationVectorIsAvailable;
+    }
+
+    @Override
+    public boolean IsGyroscopeAvailable()
+    {
+        return gyroscopeIsAvailable;
     }
 }

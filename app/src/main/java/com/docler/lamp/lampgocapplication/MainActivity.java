@@ -21,35 +21,18 @@ public class MainActivity extends AppCompatActivity {
 
         final Button passedQuestButton = (Button) findViewById(R.id.passedQuestsButton);
         passedQuestButton.setOnClickListener(new PassedQuestsButtonListener());
-
-        final Button oldCameraButton = (Button) findViewById(R.id.old_camera_button);
-        oldCameraButton.setOnClickListener(new OldCameraButtonListener());
     }
 
     private class PlayButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             LampApplication application = (LampApplication) getApplication();
             application.startViewChangeListen(MainActivity.this);
-
-
-
-
-
-
-//            application.changeActivity(RadarActivity.class);
         }
     }
 
     private class CreateQuestButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, CreateQuestActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class OldCameraButtonListener implements View.OnClickListener {
-        public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, OldCameraActivity.class);
             startActivity(intent);
         }
     }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.docler.lamp.lampgocapplication.utils.Compatibility;
 
@@ -22,18 +24,41 @@ public class OldCameraActivity extends AppCompatActivity {
     public int screenWidth;
     public int screenHeight;
 
+    private LampApplication application;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_old_camera);
+
+        application = (LampApplication) getApplication();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        getSupportActionBar().hide();
 
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
 
         cameraView = new CameraView(this);
+        setContentView(cameraView);
+    }
+
+    @Override
+    protected void onPause() {
+        application.stopViewChangeListen();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        application.startViewChangeListen(this);
     }
 }
 
@@ -55,21 +80,7 @@ class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         try {
             Camera.Parameters parameters = camera.getParameters();
-            try {
-                List<Camera.Size> supportedSizes = null;
-                supportedSizes = Compatibility.getSupportedPreviewSizes(parameters);
-
-                Iterator<Camera.Size> itr = supportedSizes.iterator();
-                while (itr.hasNext()) {
-                    Camera.Size element = itr.next();
-                    element.width -= w;
-                    element.height -= h;
-                }
-                Collections.sort(supportedSizes, new ResolutionsOrder());
-                parameters.setPreviewSize(w + supportedSizes.get(supportedSizes.size()-1).width, h + supportedSizes.get(supportedSizes.size()-1).height);
-            } catch (Exception ex) {
-                parameters.setPreviewSize(oldCameraActivity.screenWidth , oldCameraActivity.screenHeight);
-            }
+            parameters.setPreviewSize(oldCameraActivity.screenWidth , oldCameraActivity.screenHeight);
 
             camera.setParameters(parameters);
             camera.startPreview();
@@ -94,7 +105,9 @@ class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             camera = Camera.open();
+            oldCameraActivity.camera = camera;
             camera.setPreviewDisplay(holder);
+            camera.startPreview();
         } catch (IOException ex) {
             try {
                 if (camera != null) {
@@ -131,12 +144,5 @@ class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-}
-
-class ResolutionsOrder implements java.util.Comparator<Camera.Size> {
-    public int compare(Camera.Size left, Camera.Size right) {
-
-        return Float.compare(left.width + left.height, right.width + right.height);
     }
 }

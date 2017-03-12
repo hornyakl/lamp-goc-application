@@ -32,8 +32,12 @@
         <activity android:name=".CreateQuestActivity" />
         <activity android:name=".SensorDemo" />
         <activity android:name=".RadarActivity" />
-        <activity android:name=".OldCameraActivity" />
-        <activity android:name=".PassedQuestsActivity"></activity>
+        <activity android:name=".PassedQuestsActivity" />
+        <activity
+            android:name=".OldCameraActivity"
+            android:label="@string/title_activity_camera_view"
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

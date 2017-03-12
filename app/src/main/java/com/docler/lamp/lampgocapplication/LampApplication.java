@@ -33,9 +33,8 @@ public class LampApplication extends Application {
         sensorListener = new ViewChangerSensorListener();
 
         orientationProvider = new RotationVectorProvider(
-                sensorManager
+            sensorManager
         );
-
     }
 
     public void startViewChangeListen(Activity currentActivity) {
@@ -61,7 +60,6 @@ public class LampApplication extends Application {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-
             if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
                 float[] angles = new float[3];
                 orientationProvider.getEulerAngles(angles);
@@ -69,15 +67,15 @@ public class LampApplication extends Application {
 
                 if (currentActivity instanceof RadarActivity) {
                     if (tilt > CAMERA_VIEW_TILT) {
-                        changeActivity(CameraViewActivity.class);
+                        changeActivity(OldCameraActivity.class);
                     }
-                } else if (currentActivity instanceof CameraViewActivity) {
+                } else if (currentActivity instanceof OldCameraActivity) {
                     if (tilt < RADAR_VIEW_TILT) {
                         changeActivity(RadarActivity.class);
                     }
                 } else {
                     if (tilt > MIDDLE_TILT) {
-                        changeActivity(CameraViewActivity.class);
+                        changeActivity(OldCameraActivity.class);
                     } else {
                         changeActivity(RadarActivity.class);
                     }
