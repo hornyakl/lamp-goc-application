@@ -1,9 +1,5 @@
 package com.docler.lamp.lampgocapplication.Quest;
 
-/**
- * Created by cheru on 2017. 03. 11..
- */
-
 public class Quest {
     private int id;
     private String name;

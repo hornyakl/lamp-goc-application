@@ -111,6 +111,7 @@ class CameraView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             camera = Camera.open();
+            camera.setDisplayOrientation(90);
             oldCameraActivity.camera = camera;
             camera.setPreviewDisplay(holder);
             camera.startPreview();
