@@ -4,8 +4,10 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -51,6 +53,8 @@ public class OldCameraActivity extends MovementAwareActivity {
 
         drawView = new CameraDrawView(this);
         frame.addView(drawView);
+
+        frame.setOnTouchListener(new CameraOnTouchListener());
     }
 
 //    protected void updateEulerAngles(double x, double y, double z) {
@@ -110,7 +114,25 @@ public class OldCameraActivity extends MovementAwareActivity {
     protected void onQuests(List<Quest> quests) {
         drawView.clearPoints();
         for (Quest quest : quests) {
-            drawView.addPoint(quest.getLatitude(), quest.getLongitude());
+            drawView.addPoint(quest);
+        }
+    }
+
+
+    private class CameraOnTouchListener implements View.OnTouchListener {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() != MotionEvent.ACTION_DOWN)
+            {
+                return false;
+            }
+
+            Quest quest = drawView.getQuestAt((int)event.getX(), (int)event.getY());
+
+            int a = 1;
+
+            return true;
         }
     }
 }

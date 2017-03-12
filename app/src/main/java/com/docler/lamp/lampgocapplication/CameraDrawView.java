@@ -4,10 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.ArrayMap;
 import android.view.View;
 
+import com.docler.lamp.lampgocapplication.Quest.Quest;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CameraDrawView extends View {
 
@@ -18,7 +23,9 @@ public class CameraDrawView extends View {
     int midY;
     int dotRadius;
 
-    private List<double[]> points;
+    private List<Quest> points;
+
+    private Map<Quest, int[]> questPositions;
 
     private double ownLatitude;
     private double ownLongitude;
@@ -31,9 +38,10 @@ public class CameraDrawView extends View {
         super(context);
         paint = new Paint();
 
-        dotRadius = 20;
+        dotRadius = 50;
 
         points = new ArrayList<>();
+        questPositions = new HashMap<>();
     }
 
     @Override
@@ -44,13 +52,12 @@ public class CameraDrawView extends View {
         midY = getHeight() / 2;
     }
 
-    public void clearPoints()
-    {
+    public void clearPoints() {
         points.clear();
     }
 
-    public void addPoint(double latitude, double longitude) {
-        points.add(new double[]{latitude, longitude});
+    public void addPoint(Quest quest) {
+        points.add(quest);
         invalidate();
     }
 
@@ -60,10 +67,28 @@ public class CameraDrawView extends View {
         invalidate();
     }
 
-    public void setAngle(double angle)
-    {
+    public void setAngle(double angle) {
         ownAngle = angle;
         invalidate();
+    }
+
+    public Quest getQuestAt(int x, int y) {
+        double minDistanceSqrt = Integer.MAX_VALUE;
+        Quest minDistanceQuest = null;
+
+        for (Map.Entry<Quest, int[]> entry : questPositions.entrySet()) {
+            int xDif = entry.getValue()[0] - x;
+            int yDif = entry.getValue()[1] - y;
+
+            int distanceSqrt = xDif * xDif + yDif * yDif;
+
+            if (distanceSqrt < 10000 && distanceSqrt < minDistanceSqrt) {
+                minDistanceSqrt = distanceSqrt;
+                minDistanceQuest = entry.getKey();
+            }
+        }
+
+        return minDistanceQuest;
     }
 
     @Override
@@ -73,21 +98,24 @@ public class CameraDrawView extends View {
         // Use Color.parseColor to define HTML colors
         paint.setColor(Color.parseColor("#CD5C5C"));
 
-        if (ownAngle > - Math.PI / 4 && ownAngle < Math.PI / 4)
-        {
-            canvas.drawCircle((int)(midX + ownAngle * 500), midY, dotRadius, paint);
+        if (ownAngle > -Math.PI / 4 && ownAngle < Math.PI / 4) {
+            canvas.drawCircle((int) (midX + ownAngle * 500), midY, dotRadius, paint);
         }
 
         paint.setColor(Color.YELLOW);
-        for (double[] point : points) {
-            int drawX = getOffset(point[0], point[1]);
+        questPositions.clear();
+        for (Quest quest : points) {
+            int xOffset = getOffset(quest.getLatitude(), quest.getLongitude());
 
-            if (drawX == Integer.MIN_VALUE)
-            {
+            if (xOffset == Integer.MIN_VALUE) {
                 continue;
             }
 
-            canvas.drawCircle((int)(midX + drawX), midY, dotRadius, paint);
+            int drawX = (int) (midX + xOffset);
+
+            questPositions.put(quest, new int[]{drawX, midY});
+
+            canvas.drawCircle(drawX, midY, dotRadius, paint);
         }
     }
 
@@ -103,15 +131,13 @@ public class CameraDrawView extends View {
         double maxAngle = correctedOwnAngle + ANGLE / 2;
 
         if (correctedAngle > minAngle
-                && correctedAngle < maxAngle)
-        {
+                && correctedAngle < maxAngle) {
             return (int) ((correctedOwnAngle - correctedAngle) * POST_MULTI);
         }
         return Integer.MIN_VALUE;
     }
 
-    private double toNonNegativeAngle(double angle)
-    {
+    private double toNonNegativeAngle(double angle) {
         return (angle % (Math.PI * 2)) + Math.PI * 2;
     }
 }
