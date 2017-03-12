@@ -13,6 +13,8 @@ public class PassedQuestsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passed_quests);
 
+        getSupportActionBar().hide();
+
         WebView passedQuestWebView = (WebView) findViewById(R.id.passedQuestsView);
 
         passedQuestWebView.setWebChromeClient(new WebChromeClient());

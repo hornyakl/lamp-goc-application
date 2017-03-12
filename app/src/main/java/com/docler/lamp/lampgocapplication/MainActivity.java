@@ -22,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
         final Button passedQuestButton = (Button) findViewById(R.id.passedQuestsButton);
         passedQuestButton.setOnClickListener(new PassedQuestsButtonListener());
 
-        final Button sensorDemoButton = (Button) findViewById(R.id.sensor_demo_button);
-        sensorDemoButton.setOnClickListener(new SensorDemoButtonListener());
+        getSupportActionBar().hide();
     }
 
     private class PlayButtonListener implements View.OnClickListener {
@@ -43,13 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private class PassedQuestsButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, PassedQuestsActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class SensorDemoButtonListener implements View.OnClickListener {
-        public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, SensorDemo.class);
             startActivity(intent);
         }
     }

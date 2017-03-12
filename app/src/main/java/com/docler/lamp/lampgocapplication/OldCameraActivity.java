@@ -29,13 +29,10 @@ public class OldCameraActivity extends MovementAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_old_camera);
 
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-//        getSupportActionBar().hide();
+        getSupportActionBar().hide();
 
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
