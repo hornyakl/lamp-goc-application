@@ -9,8 +9,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
@@ -19,7 +17,6 @@ import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4
 import com.docler.lamp.lampgocapplication.sensorFusion.representation.Vector4f;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OldCameraActivity extends MovementAwareActivity {
@@ -30,8 +27,6 @@ public class OldCameraActivity extends MovementAwareActivity {
     public int screenHeight;
 
     private CameraDrawView drawView;
-
-    private QuestDoneProvider questDoneProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +50,6 @@ public class OldCameraActivity extends MovementAwareActivity {
         frame.addView(drawView);
 
         frame.setOnTouchListener(new CameraOnTouchListener());
-
-        questDoneProvider = new QuestDoneProvider();
     }
 
     protected void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider)

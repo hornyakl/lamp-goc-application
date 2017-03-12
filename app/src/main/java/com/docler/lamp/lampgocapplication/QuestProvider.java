@@ -18,9 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class QuestProvider {
-
-
-
     private List<QuestListener> listeners;
 
     private List<Quest> quests;
