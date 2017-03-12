@@ -131,6 +131,9 @@ public class CameraDrawView extends View {
                     ),
                     null);
 
+            paint.setTextSize(size);
+
+            canvas.drawText(quest.getName(), drawX - paint.measureText(quest.getName()) / 2, (int)(midY + size * 2), paint);
         }
     }
 
