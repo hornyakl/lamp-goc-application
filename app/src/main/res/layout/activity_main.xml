@@ -24,7 +24,6 @@
         android:id="@+id/createQuestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
         android:text="Create Quest"
         app:layout_constraintBottom_toTopOf="@+id/play_button"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,7 +43,17 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/createQuestButton" />
+
+    <Button
+        android:id="@+id/sensor_demo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintRight_toRightOf="@+id/play_button"
+        app:layout_constraintTop_toBottomOf="@+id/play_button" />
 
 </android.support.constraint.ConstraintLayout>

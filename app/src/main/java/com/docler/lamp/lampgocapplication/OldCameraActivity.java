@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
 
@@ -21,38 +22,49 @@ public class OldCameraActivity extends MovementAwareActivity {
     public int screenWidth;
     public int screenHeight;
 
+    private CameraDrawView drawView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_old_camera);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
 
         cameraView = new CameraView(this);
-        setContentView(cameraView);
+
+        FrameLayout frame = (FrameLayout) findViewById(R.id.camera_image);
+        frame.addView(cameraView);
+
+        drawView = new CameraDrawView(this);
+        frame.addView(drawView);
     }
 
     @Override
     protected void updateEulerAngles(double x, double y, double z) {
-
+        drawView.setAngle(y);
     }
 
     @Override
     protected void updateLocation(double latitude, double longitude) {
-
+        drawView.setLocation(latitude, longitude);
     }
 
     @Override
     protected void onQuests(List<Quest> quests) {
-
+        drawView.clearPoints();
+        for (Quest quest : quests) {
+            drawView.addPoint(quest.getLatitude(), quest.getLongitude());
+        }
     }
 }
 

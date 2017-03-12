@@ -36,8 +36,7 @@
         <activity
             android:name=".OldCameraActivity"
             android:label="@string/title_activity_camera_view"
-            android:theme="@style/FullscreenTheme"
-            android:screenOrientation="landscape" />
+            android:theme="@style/FullscreenTheme"/>
     </application>
 
 </manifest>

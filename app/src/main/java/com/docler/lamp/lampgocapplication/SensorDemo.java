@@ -9,8 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
+import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4;
+import com.docler.lamp.lampgocapplication.sensorFusion.representation.Quaternion;
+import com.docler.lamp.lampgocapplication.sensorFusion.representation.Vector4f;
 
 public class SensorDemo extends AppCompatActivity {
 
@@ -27,13 +31,13 @@ public class SensorDemo extends AppCompatActivity {
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        orientationProvider = new RotationVectorProvider(
+        orientationProvider = new ImprovedOrientationSensor2Provider(
             sensorManager
         );
 
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
-        sensorManager.registerListener(new SensorDemoSensorListener(), sensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(new SensorDemoSensorListener(), sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         orientationProvider.start();
 
@@ -43,6 +47,8 @@ public class SensorDemo extends AppCompatActivity {
 
     }
 
+    private long lastTime = 0;
+
     private class SensorDemoSensorListener implements SensorEventListener
     {
 
@@ -51,14 +57,20 @@ public class SensorDemo extends AppCompatActivity {
             float[] angles = new float[3];
             orientationProvider.getEulerAngles(angles);
 
-            coordinateX.setText("" + angles[0]);
-            coordinateY.setText("" + angles[1]);
-            coordinateZ.setText("" + angles[2]);
-
-            if (Math.abs(angles[1]) < 0.3)
+            if (lastTime != System.currentTimeMillis() / 1000)
             {
-                Intent intent = new Intent(SensorDemo.this, SensorDemo.class);
-                startActivity(intent);
+
+                lastTime = System.currentTimeMillis() / 1000;
+                Quaternion quaternion = new Quaternion();
+                orientationProvider.getQuaternion(quaternion);
+
+                MatrixF4x4 matrix = new MatrixF4x4();
+                orientationProvider.getRotationMatrix(matrix);
+                matrix.getMatrix();
+
+                coordinateX.setText("" + angles[0] + " " + event.values[0]);
+                coordinateY.setText("" + angles[1] + " " + event.values[1]);
+                coordinateZ.setText("" + angles[2] + " " + event.values[2]);
             }
         }
 

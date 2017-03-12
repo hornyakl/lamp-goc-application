@@ -11,8 +11,8 @@ import java.util.List;
 
 public class CameraDrawView extends View {
 
-    private static final double PRE_MULTI = 400.d;
-    private static final double POST_MULTI = 300.d;
+    private static final double ANGLE = Math.PI / 2;
+    private static final double POST_MULTI = 500;
 
     int midX;
     int midY;
@@ -50,6 +50,7 @@ public class CameraDrawView extends View {
     }
 
     public void addPoint(double latitude, double longitude) {
+        clearPoints();
         points.add(new double[]{latitude, longitude});
         invalidate();
     }
@@ -76,26 +77,40 @@ public class CameraDrawView extends View {
 
         paint.setColor(Color.YELLOW);
         for (double[] point : points) {
-            int[] drawPoints = getOffset(point[0], point[1]);
+            int drawY = getOffset(point[0], point[1]);
 
-            canvas.drawCircle(midX + drawPoints[0], midY - drawPoints[1], dotRadius, paint);
+            if (drawY == Integer.MIN_VALUE)
+            {
+                continue;
+            }
+
+            canvas.drawCircle(midX, midY + drawY, dotRadius, paint);
         }
     }
 
-    private int[] getOffset(double latitude, double longitude) {
+    private int getOffset(double latitude, double longitude) {
         double longDif = longitude - ownLongitude; // x
         double latDif = latitude - ownLatitude; // y
 
-        double distance = Math.sqrt(longDif * longDif + latDif * latDif);
+//        double distance = Math.sqrt(longDif * longDif + latDif * latDif);
 
-        double ownAngle2 = ownAngle + Math.PI/2;
-        double angle = Math.atan2(latDif, longDif) + ownAngle;
+        double angle = Math.atan2(latDif, longDif);
 
-        double pixelDistance = Math.atan(distance * PRE_MULTI) * POST_MULTI;
+        double correctedAngle = toNonNegativeAngle(angle);
+        double correctedOwnAngle = toNonNegativeAngle(ownAngle);
+        double minAngle = correctedOwnAngle- ANGLE / 2;
+        double maxAngle = correctedOwnAngle + ANGLE / 2;
 
-        int xOffset = (int) Math.round(Math.cos(angle) * pixelDistance);
-        int yOffset = (int) Math.round(Math.sin(angle) * pixelDistance);
+        if (correctedAngle > minAngle
+                && correctedAngle < maxAngle)
+        {
+            return (int) (Math.sin(correctedAngle - correctedOwnAngle) * POST_MULTI);
+        }
+        return Integer.MIN_VALUE;
+    }
 
-        return new int[]{xOffset, yOffset};
+    private double toNonNegativeAngle(double angle)
+    {
+        return (angle % (Math.PI * 2)) + Math.PI * 2;
     }
 }
