@@ -32,8 +32,6 @@ public class LampApplication extends Application {
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sensorListener = new ViewChangerSensorListener();
 
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         orientationProvider = new RotationVectorProvider(
                 sensorManager
         );
@@ -53,7 +51,7 @@ public class LampApplication extends Application {
         orientationProvider.stop();
     }
 
-    private <T extends Activity> void changeActivity(Class<T> clazz) {
+    public <T extends Activity> void changeActivity(Class<T> clazz) {
         stopViewChangeListen();
         Intent intent = new Intent(this, clazz);
         startActivity(intent);

@@ -30,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             LampApplication application = (LampApplication) getApplication();
             application.startViewChangeListen(MainActivity.this);
+
+
+
+
+
+
+//            application.changeActivity(RadarActivity.class);
         }
     }
 
