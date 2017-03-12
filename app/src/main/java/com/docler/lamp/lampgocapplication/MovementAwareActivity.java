@@ -1,5 +1,6 @@
 package com.docler.lamp.lampgocapplication;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -147,6 +148,12 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
         startLocationUpdates();
 
         application.startViewChangeListen(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     protected abstract void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider);
