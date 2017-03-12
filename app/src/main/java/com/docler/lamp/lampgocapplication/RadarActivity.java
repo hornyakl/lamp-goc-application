@@ -19,6 +19,8 @@ public class RadarActivity extends MovementAwareActivity {
 
         FrameLayout frame = (FrameLayout) findViewById(R.id.radar_frame);
 
+        getSupportActionBar().hide();
+
         drawView = new RadarDrawView(this);
 
         frame.addView(drawView);
