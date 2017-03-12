@@ -11,8 +11,12 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
+import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4;
+import com.docler.lamp.lampgocapplication.sensorFusion.representation.Vector4f;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OldCameraActivity extends MovementAwareActivity {
@@ -46,9 +50,52 @@ public class OldCameraActivity extends MovementAwareActivity {
         frame.addView(drawView);
     }
 
-    @Override
-    protected void updateEulerAngles(double x, double y, double z) {
-        drawView.setAngle(y);
+//    protected void updateEulerAngles(double x, double y, double z) {
+//
+//        MatrixF4x4 matrix = new MatrixF4x4();
+//        orientationProvider.getRotationMatrix(matrix);
+//
+//        Vector4f xv = new Vector4f(1, 0, 0, 0);
+//        Vector4f yv = new Vector4f(0, 1, 0, 0);
+//        Vector4f zv = new Vector4f(0, 0, 1, 0);
+//        Vector4f wv = new Vector4f(0, 0, 0, 1);
+//
+//        matrix.multiplyVector4fByMatrix(xv);
+//        matrix.multiplyVector4fByMatrix(yv);
+//        matrix.multiplyVector4fByMatrix(zv);
+//        matrix.multiplyVector4fByMatrix(wv);
+//
+//        double[] doubles = new double[9];
+////        doubles[0] = (Math.atan2(xv.getX(), xv.getY()));
+////        doubles[1] = (Math.atan2(xv.getY(), xv.getZ()));
+//        doubles[2] = (Math.atan2(xv.getZ(), xv.getX()));
+//
+////        doubles[3] = (Math.atan2(yv.getX(), yv.getY()));
+////        doubles[4] = (Math.atan2(yv.getY(), yv.getZ()));
+////        doubles[5] = (Math.atan2(yv.getZ(), yv.getX()));
+////
+////        doubles[6] = (Math.atan2(zv.getX(), zv.getY()));
+////        doubles[7] = (Math.atan2(zv.getY(), zv.getZ()));
+////        doubles[8] = (Math.atan2(zv.getZ(), zv.getX()));
+//
+//        drawView.invalidate();
+//
+//        drawView.testAngles = doubles;
+//
+//    }
+
+    protected void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider)
+    {
+        MatrixF4x4 matrix = new MatrixF4x4();
+        orientationProvider.getRotationMatrix(matrix);
+
+        Vector4f xVector = new Vector4f(1, 0, 0, 0);
+
+        matrix.multiplyVector4fByMatrix(xVector);
+
+        double angle = Math.atan2(xVector.getZ(), xVector.getX());
+
+        drawView.setAngle(angle);
     }
 
     @Override

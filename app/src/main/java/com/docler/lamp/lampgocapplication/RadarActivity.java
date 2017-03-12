@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
+import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 
 import java.util.List;
 
@@ -26,8 +27,11 @@ public class RadarActivity extends MovementAwareActivity {
     }
 
     @Override
-    protected void updateEulerAngles(double x, double y, double z) {
-        drawView.setAngle(x);
+    protected void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider) {
+        float[] angles = new float[3];
+        orientationProvider.getEulerAngles(angles);
+
+        drawView.setAngle(angles[0]);
     }
 
     @Override
