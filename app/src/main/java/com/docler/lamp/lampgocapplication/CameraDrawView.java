@@ -1,9 +1,13 @@
 package com.docler.lamp.lampgocapplication;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.ArrayMap;
 import android.view.View;
 
@@ -16,8 +20,8 @@ import java.util.Map;
 
 public class CameraDrawView extends View {
 
-    private static final double ANGLE = Math.PI / 2;
-    private static final double POST_MULTI = 500;
+    private static final double ANGLE = Math.PI / 4;
+    private static final double POST_MULTI = 1000;
 
     int midX;
     int midY;
@@ -34,6 +38,8 @@ public class CameraDrawView extends View {
 
     Paint paint = null;
 
+    Bitmap questionMark;
+
     public CameraDrawView(Context context) {
         super(context);
         paint = new Paint();
@@ -42,6 +48,10 @@ public class CameraDrawView extends View {
 
         points = new ArrayList<>();
         questPositions = new HashMap<>();
+
+        Resources res = context.getResources();
+        questionMark = BitmapFactory.decodeResource(res,
+                R.drawable.question_mark);
     }
 
     @Override
@@ -95,19 +105,11 @@ public class CameraDrawView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // Use Color.parseColor to define HTML colors
-        paint.setColor(Color.parseColor("#CD5C5C"));
-
-        if (ownAngle > -Math.PI / 4 && ownAngle < Math.PI / 4) {
-            canvas.drawCircle((int) (midX + ownAngle * 500), midY, dotRadius, paint);
-        }
-
         paint.setColor(Color.YELLOW);
         questPositions.clear();
         for (Quest quest : points) {
             int size = getSize(quest.getLatitude(), quest.getLongitude());
-            if (size == 0)
-            {
+            if (size == 0) {
                 continue;
             }
 
@@ -121,18 +123,24 @@ public class CameraDrawView extends View {
 
             questPositions.put(quest, new int[]{drawX, midY});
 
-            canvas.drawCircle(drawX, midY, size, paint);
+            canvas.drawBitmap(questionMark, null, new RectF(
+                            (int) (drawX - size),
+                            (int) (midY - size * 1.4),
+                            (int) (drawX + size),
+                            (int) (midY + size * 1.4)
+                    ),
+                    null);
+
         }
     }
 
-    private int getSize(double latitude, double longitude)
-    {
+    private int getSize(double latitude, double longitude) {
         float distanceMeter = distFrom(latitude, longitude, ownLatitude, ownLongitude);
         if (distanceMeter > 100) {
             return 0;
         }
 
-        return 100 - (int)distanceMeter;
+        return 100 - (int) distanceMeter;
     }
 
     private int getOffset(double latitude, double longitude) {

@@ -30,6 +30,8 @@ public class OldCameraActivity extends MovementAwareActivity {
 
     private CameraDrawView drawView;
 
+    private QuestDoneProvider questDoneProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,8 @@ public class OldCameraActivity extends MovementAwareActivity {
         frame.addView(drawView);
 
         frame.setOnTouchListener(new CameraOnTouchListener());
+
+        questDoneProvider = new QuestDoneProvider();
     }
 
 //    protected void updateEulerAngles(double x, double y, double z) {
@@ -127,7 +131,7 @@ public class OldCameraActivity extends MovementAwareActivity {
 
             Quest quest = drawView.getQuestAt((int)event.getX(), (int)event.getY());
 
-            int a = 1;
+            questDoneProvider.acceptQuest(quest);
 
             return true;
         }

@@ -1,6 +1,7 @@
 package com.docler.lamp.lampgocapplication;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import com.docler.lamp.lampgocapplication.Quest.Quest;
 
@@ -18,18 +19,32 @@ import java.util.List;
 
 public class QuestProvider {
 
+
+
     private List<QuestListener> listeners;
 
     private List<Quest> quests;
 
+    private Handler handler;
+
     public QuestProvider() {
         this.listeners = new ArrayList<>();
+
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new QuestTask().execute();
+
+                //Do something after 100ms
+                handler.postDelayed(this, 2000);
+            }
+        }, 0);
     }
 
     public void registerQuestListener(QuestListener listener)
     {
         listeners.add(listener);
-        new QuestTask().execute();
     }
 
     public List<Quest> getQuests()
