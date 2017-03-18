@@ -4,4 +4,11 @@
     <string name="title_activity_camera_view">CameraViewActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="mainTitle">LAMP GOC</string>
+    <string name="playButton">Play</string>
+    <string name="createQuestButton">Create Quest</string>
+    <string name="achievementsButton">Achievements</string>
+    <string name="googleConnectButton">Google connect</string>
+    <string name="facebookConnectButton">Facebook connect</string>
 </resources>
