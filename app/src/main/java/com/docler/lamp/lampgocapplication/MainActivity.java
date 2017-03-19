@@ -47,6 +47,29 @@ public class MainActivity extends AppCompatActivity {
         supportedAccountConnectionTypes.put("facebookConnect", "com.facebook.auth.login");
     }
 
+    /**
+     * The account picker activity will return when the user has selected and / or created an account,
+     * and the resulting account name can be retrieved here.
+     *
+     * @param requestCode int
+     * @param resultCode  int
+     * @param data        Intent
+     */
+    @Override
+    protected void onActivityResult(
+        final int requestCode,
+        final int resultCode,
+        final Intent data
+    ) {
+        if (
+            requestCode == 100
+                && resultCode == RESULT_OK
+            ) {
+            // @todo . use this accountName (email address) as the user's identification.
+            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        }
+    }
+
     private class PlayButtonListener implements View.OnClickListener {
         public void onClick(View v) {
             LampApplication application = (LampApplication) getApplication();
@@ -91,29 +114,6 @@ public class MainActivity extends AppCompatActivity {
             );
 
             startActivityForResult(accountPickerIntent, 100);
-        }
-    }
-
-    /**
-     * The account picker activity will return when the user has selected and / or created an account,
-     * and the resulting account name can be retrieved here.
-     *
-     * @param requestCode int
-     * @param resultCode  int
-     * @param data        Intent
-     */
-    @Override
-    protected void onActivityResult(
-        final int requestCode,
-        final int resultCode,
-        final Intent data
-    ) {
-        if (
-            requestCode == 100
-            && resultCode == RESULT_OK
-        ) {
-            // @todo . use this accountName (email address) as the user's identification.
-            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         }
     }
 }
