@@ -13,7 +13,7 @@
         android:layout_marginStart="104dp"
         android:layout_marginTop="29dp"
         android:gravity="center"
-        android:text="LAMP GOC"
+        android:text="@string/mainTitle"
         android:textSize="32sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="258dp"
-        android:text="Play"
+        android:text="@string/playButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,7 +38,7 @@
         android:id="@+id/createQuestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Quest"
+        android:text="@string/createQuestButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/play_button"
@@ -50,12 +50,34 @@
         android:id="@+id/passedQuestsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Achievements"
+        android:text="@string/achievementsButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createQuestButton"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
+
+    <Button
+        android:id="@+id/googleConnectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/googleConnectButton"
+        android:tag="googleConnect"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/facebookConnectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/facebookConnectButton"
+        android:tag="facebookConnect"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
