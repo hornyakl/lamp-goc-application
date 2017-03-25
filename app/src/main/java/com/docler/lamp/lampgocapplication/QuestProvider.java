@@ -1,98 +1,87 @@
 package com.docler.lamp.lampgocapplication;
 
-import android.os.Handler;
+import com.docler.lamp.lampgocapplication.quest.Quest;
+import com.docler.lamp.lampgocapplication.utils.HttpSingles;
+import com.docler.lamp.lampgocapplication.utils.JsonFunctions;
 
-import com.docler.lamp.lampgocapplication.Quest.Quest;
-import com.docler.lamp.lampgocapplication.utils.HttpPromiseClient;
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.jdeferred.android.AndroidDeferredManager;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class QuestProvider {
-    private final HttpPromiseClient httpPromiseClient;
-    private final Handler handler;
+    private static final Logger LOGGER = Logger.getLogger(QuestProvider.class.getName());
 
-    private List<QuestListener> listeners;
+    private final Observable<Collection<Quest>> questObservable;
 
-    private List<Quest> quests;
+    public QuestProvider(
+            JsonFunctions jsonFunctions,
+            HttpSingles httpSingles
+    ) {
 
-    public QuestProvider() {
+        Observable.just(1).subscribe(
+                (one) -> {
+                    Logger.getLogger(this.getClass().getName()).info("test");
+                }
+        );
 
-        // todo: use dependency injection
-        final AndroidDeferredManager deferredManager = new AndroidDeferredManager();
-        httpPromiseClient = new HttpPromiseClient(deferredManager);
-        handler = new Handler();
 
-        this.listeners = new ArrayList<>();
+        Observable.interval(1, TimeUnit.SECONDS).subscribe(
+                (one) -> {
+                    Logger.getLogger(this.getClass().getName()).info("test");
+                }
+        );
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                httpPromiseClient.get(
-                        "https://goc-lamp.tk/quest-list"
-                ).done(
-                        (result) -> {
-                            handleQuestListResult(result);
+        questObservable = Observable
+                .interval(2, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMapSingle(
+                        (tick) -> {
+                            return httpSingles.get("https://goc-lamp.tk/quest-list");
                         }
-                ).fail(
-                        (throwable) -> {
-                            // todo: logging
+                )
+                .doOnError(
+                        (error) -> {
+                            LOGGER.log(Level.WARNING, "Error retrieving quests from server", error);
                         }
-                );
-
-                handler.postDelayed(this, 2000);
-            }
-        });
+                )
+                .retry()
+                .map(jsonFunctions.convertToMap(Quest.class))
+                .doOnError(
+                        (error) -> {
+                            LOGGER.log(Level.WARNING, "Error converting server response to quests", error);
+                        }
+                )
+                .retry()
+                .map(
+                        (map) -> {
+                            return map.values();
+                        }
+                )
+                .replay(1)
+                .autoConnect(0)
+                .observeOn(AndroidSchedulers.mainThread())
+        ;
     }
 
-    private void handleQuestListResult(String questListJson) {
-        try {
-            JSONObject questList = new JSONObject(questListJson);
-
-            Iterator<String> keys = questList.keys();
-
-            quests = new ArrayList<>(questList.length());
-
-            while (keys.hasNext()) {
-                String id = keys.next();
-                JSONObject questObject = questList.getJSONObject(id);
-                Quest quest = new Quest(
-                        questObject.getInt("id"),
-                        questObject.getString("name"),
-                        questObject.getString("description"),
-                        questObject.getDouble("latitude"),
-                        questObject.getDouble("longitude"),
-                        questObject.getLong("experience_point")
-                );
-
-                quests.add(
-                        quest
-                );
-            }
-
-            for (QuestListener listener : listeners) {
-                listener.onQuests(quests);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void registerQuestListener(QuestListener listener) {
-        listeners.add(listener);
-    }
-
-    public List<Quest> getQuests() {
-        return quests;
+        questObservable
+                .subscribe(
+                        (questList) -> {
+                            listener.onQuests(questList);
+                        }
+                );
     }
 
     public interface QuestListener {
-        void onQuests(List<Quest> quests);
+        void onQuests(Collection<Quest> quests);
     }
+
+
 }

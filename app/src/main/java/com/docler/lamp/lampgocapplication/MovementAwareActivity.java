@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.docler.lamp.lampgocapplication.Quest.Quest;
+import com.docler.lamp.lampgocapplication.quest.Quest;
 import com.docler.lamp.lampgocapplication.sensorFusion.HardwareChecker;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 import com.google.android.gms.common.ConnectionResult;
@@ -22,7 +22,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.List;
+import java.util.Collection;
 
 public abstract class MovementAwareActivity extends AppCompatActivity {
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000 * 5;
@@ -79,8 +79,6 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
         locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        application.getQuestProvider().registerQuestListener(new QuestProviderListener());
     }
 
     @Override
@@ -160,7 +158,7 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
 
     protected abstract void updateLocation(double latitude, double longitude);
 
-    protected abstract void onQuests(List<Quest> quests);
+    protected abstract void onQuests(Collection<Quest> quests);
 
     private class MovementAwareSensorListener implements SensorEventListener {
 
@@ -214,10 +212,10 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
         }
     }
 
-    private class QuestProviderListener implements QuestProvider.QuestListener {
+    protected class QuestProviderListener implements QuestProvider.QuestListener {
 
         @Override
-        public void onQuests(List<Quest> quests) {
+        public void onQuests(Collection<Quest> quests) {
             MovementAwareActivity.this.onQuests(quests);
         }
     }

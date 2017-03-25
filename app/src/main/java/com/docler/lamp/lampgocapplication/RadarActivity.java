@@ -3,10 +3,10 @@ package com.docler.lamp.lampgocapplication;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.docler.lamp.lampgocapplication.Quest.Quest;
+import com.docler.lamp.lampgocapplication.quest.Quest;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 
-import java.util.List;
+import java.util.Collection;
 
 public class RadarActivity extends MovementAwareActivity {
 
@@ -22,8 +22,9 @@ public class RadarActivity extends MovementAwareActivity {
         getSupportActionBar().hide();
 
         drawView = new RadarDrawView(this);
-
         frame.addView(drawView);
+
+        application.getQuestProvider().registerQuestListener(new QuestProviderListener());
     }
 
     @Override
@@ -40,7 +41,7 @@ public class RadarActivity extends MovementAwareActivity {
     }
 
     @Override
-    protected void onQuests(List<Quest> quests) {
+    protected void onQuests(Collection<Quest> quests) {
         drawView.clearPoints();
         for (Quest quest : quests) {
             drawView.addPoint(quest.getLatitude(), quest.getLongitude());

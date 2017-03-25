@@ -1,14 +1,30 @@
-package com.docler.lamp.lampgocapplication.Quest;
+package com.docler.lamp.lampgocapplication.quest;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Quest {
     private int id;
+
     private String name;
+
     private String description;
+
     private double latitude;
+
     private double longitude;
+
     private long experiencePoint;
 
-    public Quest(int id, String name, String description, double latitude, double longitude, long experiencePoint) {
+    @JsonCreator
+    public Quest(
+            @JsonProperty("id") int id,
+            @JsonProperty("name") String name,
+            @JsonProperty("description") String description,
+            @JsonProperty("latitude") double latitude,
+            @JsonProperty("longitude") double longitude,
+            @JsonProperty("experience_point") long experiencePoint
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;

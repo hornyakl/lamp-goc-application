@@ -24,6 +24,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions{
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -37,5 +41,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'org.jdeferred:jdeferred-android-aar:1.2.4'
     compile 'cz.msebera.android:httpclient:4.4.1.2'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.6'
     testCompile 'junit:junit:4.12'
 }
