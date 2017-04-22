@@ -211,12 +211,4 @@ public abstract class MovementAwareActivity extends AppCompatActivity {
 
         }
     }
-
-    protected class QuestProviderListener implements QuestProvider.QuestListener {
-
-        @Override
-        public void onQuests(Collection<Quest> quests) {
-            MovementAwareActivity.this.onQuests(quests);
-        }
-    }
 }

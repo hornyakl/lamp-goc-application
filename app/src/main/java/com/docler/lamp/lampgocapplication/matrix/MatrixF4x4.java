@@ -1,4 +1,4 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.representation;
+package com.docler.lamp.lampgocapplication.matrix;
 
 import android.util.Log;
 

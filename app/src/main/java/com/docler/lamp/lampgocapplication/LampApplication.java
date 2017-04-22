@@ -9,10 +9,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import com.docler.lamp.lampgocapplication.quest.Quest;
+import com.docler.lamp.lampgocapplication.quest.QuestProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
-import com.docler.lamp.lampgocapplication.utils.HttpSingles;
-import com.docler.lamp.lampgocapplication.utils.JsonFunctions;
+import com.docler.lamp.lampgocapplication.utils.http.HttpFunctionsFactory;
+import com.docler.lamp.lampgocapplication.utils.json.JsonFunctionsFactory;
 
 public class LampApplication extends Application {
 
@@ -43,7 +44,7 @@ public class LampApplication extends Application {
             sensorManager
         );
 
-        questProvider = new QuestProvider(new JsonFunctions(), new HttpSingles());
+        questProvider = new QuestProvider(new JsonFunctionsFactory(), new HttpFunctionsFactory());
     }
 
     public void startViewChangeListen(Activity currentActivity) {

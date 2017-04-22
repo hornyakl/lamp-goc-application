@@ -1,4 +1,4 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.representation;
+package com.docler.lamp.lampgocapplication.matrix;
 
 /**
  * 3-dimensional vector with conventient getters and setters. Additionally this class is serializable and

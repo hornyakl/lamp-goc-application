@@ -5,15 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Quest {
     private int id;
-
     private String name;
-
     private String description;
-
     private double latitude;
-
     private double longitude;
-
     private long experiencePoint;
 
     @JsonCreator

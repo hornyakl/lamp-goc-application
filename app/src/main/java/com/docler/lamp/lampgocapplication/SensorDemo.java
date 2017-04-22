@@ -1,6 +1,5 @@
 package com.docler.lamp.lampgocapplication;
 
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,10 +10,9 @@ import android.widget.TextView;
 
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
-import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.Quaternion;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.Vector4f;
+import com.docler.lamp.lampgocapplication.matrix.MatrixF4x4;
+import com.docler.lamp.lampgocapplication.matrix.Quaternion;
+import com.docler.lamp.lampgocapplication.matrix.Vector4f;
 
 public class SensorDemo extends AppCompatActivity {
 

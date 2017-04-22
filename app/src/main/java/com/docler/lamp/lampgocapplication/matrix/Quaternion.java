@@ -1,4 +1,4 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.representation;
+package com.docler.lamp.lampgocapplication.matrix;
 
 /**
  * The Quaternion class. A Quaternion is a four-dimensional vector that is used to represent rotations of a rigid body
@@ -18,7 +18,7 @@ package com.docler.lamp.lampgocapplication.sensorFusion.representation;
  * @author Leigh Beattie, Alexander Pacha
  *
  */
-public class Quaternion extends Vector4f {
+public class Quaternion extends Vector4f implements IQuaternion {
 
     /**
      * Rotation matrix that contains the same rotation as the Quaternion in a 4x4 homogenised rotation matrix.
@@ -211,6 +211,7 @@ public class Quaternion extends Vector4f {
      *
      * @param output Vector4f axis angle.
      */
+    @Override
     public void toAxisAngle(Vector4f output) {
         if (getW() > 1) {
             normalise(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
@@ -243,6 +244,7 @@ public class Quaternion extends Vector4f {
      *
      * @return An array of size 3 containing the euler angles for this quaternion
      */
+    @Override
     public double[] toEulerAngles() {
         double[] ret = new double[3];
 
@@ -431,6 +433,7 @@ public class Quaternion extends Vector4f {
     /**
      * @return Returns this Quaternion in the Rotation Matrix representation
      */
+    @Override
     public MatrixF4x4 getMatrix4x4() {
         //toMatrixColMajor();
         if (dirty) {

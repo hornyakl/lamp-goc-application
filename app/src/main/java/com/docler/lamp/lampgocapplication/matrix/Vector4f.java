@@ -1,9 +1,9 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.representation;
+package com.docler.lamp.lampgocapplication.matrix;
 
 /**
  * Representation of a four-dimensional float-vector
  */
-public class Vector4f {
+public class Vector4f implements IVector4f {
 
     /** The points. */
     protected float points[] = { 0, 0, 0, 0 };
@@ -149,6 +149,7 @@ public class Vector4f {
      *
      * @return the x
      */
+    @Override
     public float getX() {
         return this.points[0];
     }
@@ -158,6 +159,7 @@ public class Vector4f {
      *
      * @return the y
      */
+    @Override
     public float getY() {
         return this.points[1];
     }
@@ -167,6 +169,7 @@ public class Vector4f {
      *
      * @return the z
      */
+    @Override
     public float getZ() {
         return this.points[2];
     }
@@ -176,6 +179,7 @@ public class Vector4f {
      *
      * @return the w
      */
+    @Override
     public float getW() {
         return this.points[3];
     }
@@ -261,6 +265,7 @@ public class Vector4f {
      * @param rhs True if they match, false other wise.
      * @return
      */
+    @Override
     public boolean compareTo(Vector4f rhs) {
         boolean ret = false;
         if (this.points[0] == rhs.points[0] && this.points[1] == rhs.points[1] && this.points[2] == rhs.points[2]

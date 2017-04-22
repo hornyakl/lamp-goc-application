@@ -1,4 +1,4 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.representation;
+package com.docler.lamp.lampgocapplication.matrix;
 
 /**
  * Matrix math utilities. These methods operate on OpenGL ES format

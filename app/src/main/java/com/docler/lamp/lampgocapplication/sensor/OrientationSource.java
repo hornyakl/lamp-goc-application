@@ -1,23 +1,29 @@
-package com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider;
-
-import com.docler.lamp.lampgocapplication.matrix.Quaternion;
+package com.docler.lamp.lampgocapplication.sensor;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.docler.lamp.lampgocapplication.matrix.IQuaternion;
+import com.docler.lamp.lampgocapplication.matrix.Quaternion;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * The orientation provider that delivers the absolute orientation from the {@link Sensor#TYPE_GYROSCOPE
  * Gyroscope} and {@link Sensor#TYPE_ROTATION_VECTOR Android Rotation Vector sensor}.
- * 
+ *
  * It mainly relies on the gyroscope, but corrects with the Android Rotation Vector which also provides an absolute
  * estimation of current orientation. The correction is a static weight.
- * 
+ *
  * @author Alexander Pacha
- * 
+ *
  */
-public class ImprovedOrientationSensor2Provider extends OrientationProvider {
+public class OrientationSource extends Observable<IQuaternion> {
 
     /**
      * Constant specifying the factor between a Nano-second and a second
@@ -27,7 +33,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     /**
      * The quaternion that stores the difference that is obtained by the gyroscope.
      * Basically it contains a rotational difference encoded into a quaternion.
-     * 
+     *
      * To obtain the absolute orientation one must add this into an initial position by
      * multiplying it with another quaternion
      */
@@ -44,6 +50,11 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     private Quaternion quaternionRotationVector = new Quaternion();
 
     /**
+     * The quaternion that holds the current rotation
+     */
+    protected final Quaternion currentOrientationQuaternion;
+
+    /**
      * The time-stamp being used to record the time when the last gyroscope event occurred.
      */
     private long timestamp;
@@ -55,7 +66,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
      * real motion (usually > 0.1). Note that there is a chance of missing real motion, if the use is turning the
      * device really slowly, so this value has to find a balance between accepting noise (threshold = 0) and missing
      * slow user-action (threshold > 0.5). 0.1 seems to work fine for most applications.
-     * 
+     *
      */
     private static final double EPSILON = 0.1f;
 
@@ -97,7 +108,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
      * (gyroscope orientation and rotationVector orientation) falls below this threshold (ideally it should be 1,
      * if they are exactly the same) the system falls back to the gyroscope values only and just ignores the
      * rotation vector.
-     * 
+     *
      * This value should be quite high (> 0.7) to filter even the slightest discrepancies that causes jumps when
      * tiling the device. Possible values are between 0 and 1, where a value close to 1 means that even a very small
      * difference between the two sensors will be treated as outlier, whereas a value close to zero means that the
@@ -111,7 +122,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
      * (gyroscope orientation and rotationVector orientation) falls below this threshold (ideally it should be 1, if
      * they are exactly the same), the system will start increasing the panic counter (that probably indicates a
      * gyroscope failure).
-     * 
+     *
      * This value should be lower than OUTLIER_THRESHOLD (0.5 - 0.7) to only start increasing the panic counter,
      * when there is a huge discrepancy between the two fused sensors.
      */
@@ -120,7 +131,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     /**
      * The threshold that indicates that a chaos state has been established rather than just a temporary peak in the
      * rotation vector (caused by exploding angled during fast tilting).
-     * 
+     *
      * If the chaosCounter is bigger than this threshold, the current position will be reset to whatever the
      * rotation vector indicates.
      */
@@ -133,20 +144,50 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
     final private Quaternion correctedQuaternion = new Quaternion();
     final private Quaternion interpolatedQuaternion = new Quaternion();
 
+    private final Observable<Quaternion> delegateObservable;
+
     /**
      * Initialises a new OrientationSource
-     * 
+     *
      * @param sensorManager The android sensor manager
      */
-    public ImprovedOrientationSensor2Provider(SensorManager sensorManager) {
-        super(sensorManager);
+    public OrientationSource(SensorManager sensorManager) {
 
-        //Add the gyroscope and rotation Vector
-        sensorList.add(sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-        sensorList.add(sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR));
+        // Initialise with identity
+        currentOrientationQuaternion = new Quaternion();
+
+        delegateObservable = Observable
+                .merge(
+                        new SensorSource(
+                                sensorManager,
+                                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+                        ),
+                        new SensorSource(
+                                sensorManager,
+                                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+                        )
+                )
+                .subscribeOn(Schedulers.io())
+                .map(
+                        new Function<SensorEvent, Quaternion>() {
+                            @Override
+                            public Quaternion apply(SensorEvent sensorEvent) throws Exception {
+                                onSensorChanged(sensorEvent);
+
+                                return currentOrientationQuaternion;
+                            }
+                        }
+                )
+                .replay(1)
+                .refCount()
+        ;
     }
 
     @Override
+    protected void subscribeActual(Observer<? super IQuaternion> observer) {
+        delegateObservable.subscribe(observer);
+    }
+
     public void onSensorChanged(SensorEvent event) {
 
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
@@ -199,7 +240,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
                 // Move current gyro orientation
                 deltaQuaternion.multiplyByQuat(quaternionGyroscope, quaternionGyroscope);
 
-                // Calculate dot-product to calculate whether the two orientation sensors have diverged 
+                // Calculate dot-product to calculate whether the two orientation sensors have diverged
                 // (if the dot-product is closer to 0 than to 1), because it should be close to 1 if both are the same.
                 float dotProd = quaternionGyroscope.dotProduct(quaternionRotationVector);
 
@@ -258,7 +299,7 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
 
     /**
      * Sets the output quaternion and matrix with the provided quaternion and synchronises the setting
-     * 
+     *
      * @param quaternion The Quaternion to set (the result of the sensor fusion)
      */
     private void setOrientationQuaternionAndMatrix(Quaternion quaternion) {
@@ -267,12 +308,6 @@ public class ImprovedOrientationSensor2Provider extends OrientationProvider {
         // Before converting it back to matrix representation, we need to revert this process
         correctedQuaternion.w(-correctedQuaternion.w());
 
-        synchronized (synchronizationToken) {
-            // Use gyro only
-            currentOrientationQuaternion.copyVec4(quaternion);
-
-            // Set the rotation matrix as well to have both representations
-            SensorManager.getRotationMatrixFromVector(currentOrientationRotationMatrix.matrix, correctedQuaternion.array());
-        }
+        currentOrientationQuaternion.copyVec4(quaternion);
     }
 }

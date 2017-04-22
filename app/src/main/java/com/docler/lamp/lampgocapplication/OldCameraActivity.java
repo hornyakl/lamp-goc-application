@@ -3,6 +3,8 @@ package com.docler.lamp.lampgocapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.location.Location;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -11,13 +13,18 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.docler.lamp.lampgocapplication.permission.PermissionChecker;
 import com.docler.lamp.lampgocapplication.quest.Quest;
+import com.docler.lamp.lampgocapplication.sensor.LocationSource;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.Vector4f;
+import com.docler.lamp.lampgocapplication.matrix.MatrixF4x4;
+import com.docler.lamp.lampgocapplication.matrix.Vector4f;
 
 import java.io.IOException;
 import java.util.Collection;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 public class OldCameraActivity extends MovementAwareActivity {
     CameraView cameraView;
@@ -51,7 +58,18 @@ public class OldCameraActivity extends MovementAwareActivity {
 
         frame.setOnTouchListener(new CameraOnTouchListener());
 
-        application.getQuestProvider().registerQuestListener(new QuestProviderListener());
+        LocationSource source = new LocationSource();
+
+        source
+                .compose(application.getQuestProvider().applyQuestProvider())
+                .subscribe(
+                        new Consumer<Collection<Quest>>() {
+                            @Override
+                            public void accept(Collection<Quest> quests) throws Exception {
+                                OldCameraActivity.this.onQuests(quests);
+                            }
+                        }
+                );
     }
 
     protected void updateOrientation(ImprovedOrientationSensor2Provider orientationProvider)

@@ -1,6 +1,6 @@
 package com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider;
 
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.Quaternion;
+import com.docler.lamp.lampgocapplication.matrix.Quaternion;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

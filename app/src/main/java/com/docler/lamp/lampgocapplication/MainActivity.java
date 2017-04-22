@@ -1,119 +1,193 @@
 package com.docler.lamp.lampgocapplication;
 
-import android.accounts.AccountManager;
+import android.accounts.Account;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.common.AccountPicker;
+import com.docler.lamp.lampgocapplication.account.AccountManagerWrapper;
+import com.docler.lamp.lampgocapplication.account.AccountPicker;
+import com.docler.lamp.lampgocapplication.account.AccountType;
+import com.docler.lamp.lampgocapplication.account.ActivityResult;
+import com.docler.lamp.lampgocapplication.permission.PermissionChecker;
+import com.docler.lamp.lampgocapplication.permission.RequestPermissionResult;
+import com.docler.lamp.lampgocapplication.view.DisablingListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 public class MainActivity extends AppCompatActivity {
-    private Map<String, String> supportedAccountConnectionTypes;
+    private static final Logger LOGGER = Logger.getLogger(MainActivity.class.getName());
+
+    private final Subject<ActivityResult> activityResultSubject = PublishSubject.create();
+    private final Subject<RequestPermissionResult> requestPermissionsResultSubject = PublishSubject.create();
+
+    private Button playButton;
+    private Button createQuestButton;
+    private Button passedQuestsButton;
+    private Button googleConnectButton;
+    private Button facebookConnectButton;
+    private CompositeDisposable disposables;
+
+    private AccountPicker accountPicker;
+    private PermissionChecker permissionChecker;
+
+    private final String[] locationPermissions = new String[]{
+        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initSupportedAccountConnectionTypes();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
-        final Button button = (Button) findViewById(R.id.play_button);
-        button.setOnClickListener(new PlayButtonListener());
+        disposables = new CompositeDisposable();
 
-        final Button createQuestButton = (Button) findViewById(R.id.createQuestButton);
-        createQuestButton.setOnClickListener(new CreateQuestButtonListener());
+        playButton = (Button) findViewById(R.id.play_button);
+        createQuestButton = (Button) findViewById(R.id.createQuestButton);
+        passedQuestsButton = (Button) findViewById(R.id.passedQuestsButton);
+        googleConnectButton = (Button) findViewById(R.id.googleConnectButton);
+        facebookConnectButton = (Button) findViewById(R.id.facebookConnectButton);
 
-        final Button passedQuestButton = (Button) findViewById(R.id.passedQuestsButton);
-        passedQuestButton.setOnClickListener(new PassedQuestsButtonListener());
+        accountPicker = new AccountPicker(new AccountManagerWrapper(), this, activityResultSubject);
 
-        final Button googleConnectButton = (Button) findViewById(R.id.googleConnectButton);
-        googleConnectButton.setOnClickListener(new ConnectButtonListener(googleConnectButton));
+        permissionChecker = new PermissionChecker(this, requestPermissionsResultSubject);
 
-        final Button facebookConnectButton = (Button) findViewById(R.id.facebookConnectButton);
-        facebookConnectButton.setOnClickListener(new ConnectButtonListener(facebookConnectButton));
-
-        getSupportActionBar().hide();
     }
 
-    private void initSupportedAccountConnectionTypes() {
-        supportedAccountConnectionTypes = new HashMap<>();
-
-        supportedAccountConnectionTypes.put("googleConnect", "com.google");
-        supportedAccountConnectionTypes.put("facebookConnect", "com.facebook.auth.login");
-    }
-
-    /**
-     * The account picker activity will return when the user has selected and / or created an account,
-     * and the resulting account name can be retrieved here.
-     *
-     * @param requestCode int
-     * @param resultCode  int
-     * @param data        Intent
-     */
     @Override
-    protected void onActivityResult(
-        final int requestCode,
-        final int resultCode,
-        final Intent data
-    ) {
-        if (
-            requestCode == 100
-                && resultCode == RESULT_OK
-            ) {
-            // @todo . use this accountName (email address) as the user's identification.
-            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        }
+    protected void onStart() {
+        super.onStart();
+        initButtons();
     }
 
-    private class PlayButtonListener implements View.OnClickListener {
-        public void onClick(View v) {
-            LampApplication application = (LampApplication) getApplication();
-            application.startViewChangeListen(MainActivity.this);
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        disposables.clear();
     }
 
-    private class CreateQuestButtonListener implements View.OnClickListener {
-        public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, CreateQuestActivity.class);
-            startActivity(intent);
-        }
+    private void initButtons() {
+        createOnClickListener(playButton)
+                .compose(permissionChecker.<View>applyCheckPermissions(locationPermissions))
+                .subscribe(
+                        new Consumer<View>() {
+                            @Override
+                            public void accept(View nill) throws Exception {
+                                Intent intent = new Intent(MainActivity.this, CreateQuestActivity.class);
+                                MainActivity.this.startActivity(intent);
+                            }
+                        }
+                );
+
+        createOnClickListener(createQuestButton)
+                .subscribe(
+                        new Consumer<View>() {
+                            @Override
+                            public void accept(View view) throws Exception {
+                                Intent intent = new Intent(MainActivity.this, CreateQuestActivity.class);
+                                MainActivity.this.startActivity(intent);
+                            }
+                        }
+                );
+
+
+        createOnClickListener(passedQuestsButton)
+                .subscribe(
+                        new Consumer<View>() {
+                            @Override
+                            public void accept(View view) throws Exception {
+                                Intent intent = new Intent(MainActivity.this, PassedQuestsActivity.class);
+                                MainActivity.this.startActivity(intent);
+                            }
+                        }
+                );
+
+        createOnClickListener(googleConnectButton)
+                .compose(accountPicker.<View>applyPickAccount(AccountType.GOOGLE))
+                .subscribe(createAccountObserver());
+
+        createOnClickListener(facebookConnectButton)
+                .compose(accountPicker.<View>applyPickAccount(AccountType.FACEBOOK))
+                .subscribe(createAccountObserver());
     }
 
-    private class PassedQuestsButtonListener implements View.OnClickListener {
-        public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, PassedQuestsActivity.class);
-            startActivity(intent);
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        activityResultSubject.onNext(new ActivityResult(requestCode, resultCode, data));
     }
 
-    private class ConnectButtonListener implements View.OnClickListener {
-        Button connectButton;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        ConnectButtonListener(Button clickedConnectButton) {
-            connectButton = clickedConnectButton;
-        }
+        requestPermissionsResultSubject.onNext(new RequestPermissionResult(requestCode, permissions, grantResults));
+    }
 
-        @Override
-        public void onClick(View v)
-        {
-            // @see: https://developers.google.com/android/reference/com/google/android/gms/common/AccountPicker
-            Intent accountPickerIntent = AccountPicker.newChooseAccountIntent(
-                null,
-                null,
-                new String[]{supportedAccountConnectionTypes.get(connectButton.getTag().toString())},
-                false,
-                null,
-                null,
-                null,
-                null
-            );
+    private Observable<View> createOnClickListener(View view) {
+        return new DisablingListener(view)
+                .compose(this.<View>applyDisposableCollector());
+    }
 
-            startActivityForResult(accountPickerIntent, 100);
-        }
+    private Observer<Account> createAccountObserver() {
+        return new Observer<Account>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(Account account) {
+                LOGGER.warning("auth success" + account.toString());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                LOGGER.log(Level.WARNING, "auth failed", t);
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+    }
+
+    private <E> ObservableTransformer<E, E> applyDisposableCollector() {
+        return new ObservableTransformer<E, E>() {
+            @Override
+            public ObservableSource<E> apply(Observable<E> upstream) {
+                return upstream
+                        .doOnSubscribe(
+                                new Consumer<Disposable>() {
+                                    @Override
+                                    public void accept(Disposable disposable) throws Exception {
+                                        disposables.add(disposable);
+                                    }
+                                }
+                        );
+            }
+        };
     }
 }

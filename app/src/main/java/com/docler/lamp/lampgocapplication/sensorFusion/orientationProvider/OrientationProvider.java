@@ -3,8 +3,8 @@ package com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.MatrixF4x4;
-import com.docler.lamp.lampgocapplication.sensorFusion.representation.Quaternion;
+import com.docler.lamp.lampgocapplication.matrix.MatrixF4x4;
+import com.docler.lamp.lampgocapplication.matrix.Quaternion;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
