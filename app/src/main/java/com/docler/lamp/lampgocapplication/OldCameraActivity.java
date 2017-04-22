@@ -3,8 +3,6 @@ package com.docler.lamp.lampgocapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
-import android.location.Location;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -13,7 +11,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.docler.lamp.lampgocapplication.permission.PermissionChecker;
 import com.docler.lamp.lampgocapplication.quest.Quest;
 import com.docler.lamp.lampgocapplication.sensor.LocationSource;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
@@ -23,7 +20,6 @@ import com.docler.lamp.lampgocapplication.matrix.Vector4f;
 import java.io.IOException;
 import java.util.Collection;
 
-import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
 public class OldCameraActivity extends MovementAwareActivity {
@@ -33,7 +29,7 @@ public class OldCameraActivity extends MovementAwareActivity {
     public int screenWidth;
     public int screenHeight;
 
-    private CameraDrawView drawView;
+    private CameraView drawView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,7 @@ public class OldCameraActivity extends MovementAwareActivity {
         FrameLayout frame = (FrameLayout) findViewById(R.id.camera_image);
         frame.addView(cameraView);
 
-        drawView = new CameraDrawView(this);
+        drawView = new CameraView(this);
         frame.addView(drawView);
 
         frame.setOnTouchListener(new CameraOnTouchListener());
@@ -61,7 +57,7 @@ public class OldCameraActivity extends MovementAwareActivity {
         LocationSource source = new LocationSource();
 
         source
-                .compose(application.getQuestProvider().applyQuestProvider())
+                .compose(application.getQuestSource().applyQuestProvider())
                 .subscribe(
                         new Consumer<Collection<Quest>>() {
                             @Override

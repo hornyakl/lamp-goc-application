@@ -1,6 +1,6 @@
 package com.docler.lamp.lampgocapplication.matrix;
 
-interface IQuaternion extends IVector4f {
+public interface IQuaternion extends IVector4f {
     void toAxisAngle(Vector4f output);
 
     double[] toEulerAngles();

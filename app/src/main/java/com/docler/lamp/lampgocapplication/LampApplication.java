@@ -9,7 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import com.docler.lamp.lampgocapplication.quest.Quest;
-import com.docler.lamp.lampgocapplication.quest.QuestProvider;
+import com.docler.lamp.lampgocapplication.quest.QuestSource;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.OrientationProvider;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.RotationVectorProvider;
 import com.docler.lamp.lampgocapplication.utils.http.HttpFunctionsFactory;
@@ -25,7 +25,7 @@ public class LampApplication extends Application {
 
     private OrientationProvider orientationProvider;
 
-    private QuestProvider questProvider;
+    private QuestSource questSource;
 
     private static final float CAMERA_VIEW_TILT = 0.7f;
     private static final float RADAR_VIEW_TILT = 0.5f;
@@ -44,7 +44,7 @@ public class LampApplication extends Application {
             sensorManager
         );
 
-        questProvider = new QuestProvider(new JsonFunctionsFactory(), new HttpFunctionsFactory());
+        questSource = new QuestSource(new JsonFunctionsFactory(), new HttpFunctionsFactory());
     }
 
     public void startViewChangeListen(Activity currentActivity) {
@@ -60,8 +60,8 @@ public class LampApplication extends Application {
         orientationProvider.stop();
     }
 
-    public QuestProvider getQuestProvider() {
-        return questProvider;
+    public QuestSource getQuestSource() {
+        return questSource;
     }
 
     public <T extends Activity> void changeActivity(Class<T> clazz) {

@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 import com.docler.lamp.lampgocapplication.quest.Quest;
 import com.docler.lamp.lampgocapplication.sensor.LocationSource;
 import com.docler.lamp.lampgocapplication.sensorFusion.orientationProvider.ImprovedOrientationSensor2Provider;
+import com.docler.lamp.lampgocapplication.ui.questLocator.RadarView;
 
 import java.util.Collection;
 
@@ -13,7 +14,7 @@ import io.reactivex.functions.Consumer;
 
 public class RadarActivity extends MovementAwareActivity {
 
-    private RadarDrawView drawView;
+    private RadarView drawView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +25,13 @@ public class RadarActivity extends MovementAwareActivity {
 
         getSupportActionBar().hide();
 
-        drawView = new RadarDrawView(this);
+        drawView = new RadarView(this);
         frame.addView(drawView);
 
         LocationSource source = new LocationSource();
 
         source
-                .compose(application.getQuestProvider().applyQuestProvider())
+                .compose(application.getQuestSource().applyQuestProvider())
                 .subscribe(
                         new Consumer<Collection<Quest>>() {
                             @Override

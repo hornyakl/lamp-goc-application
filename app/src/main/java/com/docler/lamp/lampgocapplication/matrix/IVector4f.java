@@ -1,6 +1,6 @@
 package com.docler.lamp.lampgocapplication.matrix;
 
-interface IVector4f {
+public interface IVector4f {
     float getX();
 
     float getY();
